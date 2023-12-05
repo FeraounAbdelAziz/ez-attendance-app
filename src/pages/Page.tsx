@@ -24,7 +24,12 @@ const Page: React.FC = () => {
             <IonTitle size="large">{name}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name={name} />
+        <div style={{ display: 'flex' , justifyContent : "space-between"}}>
+      <div style={{ width : "250px" ,height : "50px",display : "flex", alignItems : "center",justifyContent :"center", backgroundColor: 'red' }}>Red</div>
+      <div style={{ width : "250px" ,height : "50px",display : "flex", alignItems : "center",justifyContent :"center", backgroundColor: 'green' }}>Green</div>
+      <div style={{ width : "250px" ,height : "50px",display : "flex", alignItems : "center",justifyContent :"center", backgroundColor: 'blue' }}>Blue</div>
+    </div>
+        {/* <ExploreContainer name={name} /> */}
       </IonContent>
     </IonPage>
   );
