@@ -1,0 +1,8 @@
+{
+  "name": "should-work",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "ca82206a"
+}
