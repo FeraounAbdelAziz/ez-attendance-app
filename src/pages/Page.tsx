@@ -2,37 +2,28 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import ExploreContainer from '../components/ExploreContainer';
-import {supabase} from '../supabaseClient'
+import { supabase } from '../supabaseClient'
 import './Page.css';
 import TableMUI from './TableMUI';
 
 const Page = () => {
   const { name } = useParams<{ name: string; }>();
-  interface Users {
-    user_id: any,
-    username: any,
-    password: any ,
-  }
-  const [users, setUsers] = useState<Users[]>([]);
 
-  async function getusers() {
+  const [classes, setClasses] = useState([]);
 
-    const { data, error } = await supabase
-      .from('users')
+
+  async function getClass() {
+    const { data } = await supabase
+      .from('class')
       .select('*')
-      
-    if (error) {
-      console.error('Error fetching users :', error);
-      return [];
-    }
-    return data;
+    return data || [];
   }
 
   useEffect(() => {
-    getusers().then((data) => {
-      setUsers(data);
-    });
+    getClass().then((data: any) => setClasses(data));
   }, []);
+
+
 
   return (
     <IonPage>
@@ -57,12 +48,14 @@ const Page = () => {
       <div style={{ width : "250px" ,height : "50px",display : "flex", alignItems : "center",justifyContent :"center", backgroundColor: 'green' }}>Green</div>
       <div style={{ width : "250px" ,height : "50px",display : "flex", alignItems : "center",justifyContent :"center", backgroundColor: 'blue' }}>Blue</div>
     </div> */}
-        <ul>
-          {users.map((user) => (
-            <li key={user.user_id}>user : {user.username} password : {user.password}</li>
-          ))}
-        </ul>
         <TableMUI />
+        {
+          classes?.map((classItem: { name: string; year: number }, index) => {
+            return <ul>
+              <li key={index}>class name: {classItem.name} class year: {classItem.year}</li>
+            </ul>;
+          })
+        }
         {/* <ExploreContainer name={name} /> */}
       </IonContent>
     </IonPage>
