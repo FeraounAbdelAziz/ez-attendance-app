@@ -1,12 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react'
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { useSpring, animated } from '@react-spring/web';
-import { FormControl, FormHelperText, Input, InputLabel } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as Yup from "yup";
 import FormikControl from "../../components/FormikComponents/FormikControl";
@@ -59,8 +51,7 @@ export default function AddGroupModal() {
     console.log('====================================');
   };
   return (
-    <React.Fragment>
-
+    <>
       <IonFab slot="fixed" vertical="bottom" horizontal="end">
         <IonFabButton>
           <IonButton style={{ width: "100%", height: '100%', backgroundColor: "transparent" }} id="open-modal" expand="block">
@@ -68,7 +59,6 @@ export default function AddGroupModal() {
           </IonButton>
         </IonFabButton>
       </IonFab>
-
       <IonModal id="example-modal" ref={modal} trigger="open-modal">
         <IonToolbar>
           <IonTitle>Add Class</IonTitle>
@@ -135,6 +125,6 @@ export default function AddGroupModal() {
           }}
         </Formik>
       </IonModal>
-    </React.Fragment>
+    </>
   );
 }
