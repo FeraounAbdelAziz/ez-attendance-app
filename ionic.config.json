@@ -2,6 +2,7 @@
   "name": "Mae no gakusei",
   "integrations": {
     "capacitor": {}
+    
   },
   "type": "react-vite",
   "id": "ca82206a"
