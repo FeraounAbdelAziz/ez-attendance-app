@@ -5,9 +5,9 @@ import FormikControl from "../../components/FormikComponents/FormikControl";
 import { supabase } from '../../supabaseClient';
 import { IonButton, IonButtons, IonFab, IonFabButton, IonIcon, IonItem, IonList, IonModal, IonTitle, IonToolbar } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import './AddGroupModal.css';
+import './AddClassModal.css';
 
-export default function AddGroupModal() {
+export default function AddClassModal() {
   const modal = React.useRef<HTMLIonModalElement>(null);
 
   function dismiss() {

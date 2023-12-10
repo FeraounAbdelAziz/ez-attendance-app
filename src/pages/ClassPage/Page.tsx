@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { IonButton, IonButtons, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenuButton, IonModal, IonPage, IonRow, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem,  IonList,  IonModal,  IonRow, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react';
 import { supabase } from '../../supabaseClient';
-import TableMUI from './AddGroupModal';
 import deleteIcon from "/assets/deleteIcon.svg";
 import updateIcon from "/assets/updateIcon.svg";
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import FormikControl from '../../components/FormikComponents/FormikControl';
 import './Page.css';
-import './AddGroupModal.css';
-import AddGroupModal from './AddGroupModal';
-import { add } from 'ionicons/icons';
+import './AddClassModal.css';
+import AddClassModal from './AddClassModal';
+
 
 const ClassPage = () => {
   const modal = useRef<HTMLIonModalElement>(null);
@@ -69,8 +68,8 @@ const ClassPage = () => {
             <IonSearchbar></IonSearchbar>
           </IonToolbar>
         </IonHeader>
-        <AddGroupModal />
-
+        <AddClassModal />
+        
         {classes?.map((classItem: { class_id: any; name: any; speciality: any; level: any; year_college: any }, index: any) => (
           <IonList key={index}>
             <IonItem>

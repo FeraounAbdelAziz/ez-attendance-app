@@ -30,13 +30,15 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonPage>
-          <IonReactRouter>
-            <IonRouterOutlet>
-              <Route path="/class" component={ClassPage} />
-              <Redirect exact from="/" to="/class" />
-              <Route path="/group" component={GroupPage} />
-            </IonRouterOutlet>
-          </IonReactRouter>
+        
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route path="/class" component={ClassPage} />
+            <Redirect exact from="/" to="/class" />
+            <Route path="/class/:Class_id" component={GroupPage} />
+            {/* <Route exact path="/group" component={GroupPage} /> */}
+          </IonRouterOutlet>
+        </IonReactRouter>
 
       </IonPage>
 
