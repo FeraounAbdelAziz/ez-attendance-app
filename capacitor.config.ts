@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'should-work',
+  appName: 'ez-attendance',
   webDir: 'dist',
   server: {
     androidScheme: 'https',
