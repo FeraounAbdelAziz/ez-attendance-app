@@ -1,6 +1,7 @@
 import { IonApp, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonRouterOutlet, IonSearchbar, IonSplitPane, IonTitle, IonToolbar, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Menu from './components/Menu';
 import ClassPage from './pages/ClassPage/Page';
 import GroupPage from './pages/GroupPage/Page';
@@ -30,13 +31,16 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonPage>
-        
+
         <IonReactRouter>
           <IonRouterOutlet>
-            <Route path="/class" component={ClassPage} />
-            <Redirect exact from="/" to="/class" />
-            <Route path="/class/:Class_id" component={GroupPage} />
-            {/* <Route exact path="/group" component={GroupPage} /> */}
+            <Router>
+              <Switch>
+                <Route path="/class/:class_id" component={GroupPage} />
+                <Route exact path="/class" component={ClassPage} />
+                <Redirect exact from="/" to="/class" />
+              </Switch>
+            </Router>
           </IonRouterOutlet>
         </IonReactRouter>
 

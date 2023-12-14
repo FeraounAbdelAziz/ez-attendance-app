@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem,  IonList,  IonModal,  IonRow, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonList, IonLoading, IonModal, IonRow, IonSearchbar, IonText, IonTitle, IonToolbar, useIonLoading } from '@ionic/react';
 import { supabase } from '../../supabaseClient';
 import deleteIcon from "/assets/deleteIcon.svg";
 import updateIcon from "/assets/updateIcon.svg";
@@ -9,6 +9,8 @@ import FormikControl from '../../components/FormikComponents/FormikControl';
 import './Page.css';
 import './AddClassModal.css';
 import AddClassModal from './AddClassModal';
+import { Link } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router';
 
 
 const ClassPage = () => {
@@ -57,6 +59,7 @@ const ClassPage = () => {
     setIsModalOpen(false)
   };
 
+  const history = useHistory();
   return (
     <React.Fragment>
       <IonContent fullscreen>
@@ -69,30 +72,38 @@ const ClassPage = () => {
           </IonToolbar>
         </IonHeader>
         <AddClassModal />
-        
         {classes?.map((classItem: { class_id: any; name: any; speciality: any; level: any; year_college: any }, index: any) => (
           <IonList key={index}>
             <IonItem>
               <IonGrid>
-                <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
-                  <IonCol className="ion-align-self-center" size="8">
-                    <IonText color="white">
-                      {`${classItem.name} ${classItem.speciality} ${classItem.level} ${classItem.year_college}`}
-                    </IonText>
-                  </IonCol>
-                  <IonCol className="ion-align-self-center" size="4">
-                    <IonButton
-                      id={`open-modal-update-${classItem.class_id}`}
-                      size="small"
-                      onClick={() => handleOpenModal(classItem)}
-                    >
-                      <IonIcon src={updateIcon} />
-                    </IonButton>
-                    <IonButton size="small" onClick={() => deleteClass(classItem.class_id)}>
-                      <IonIcon src={deleteIcon} />
-                    </IonButton>
-                  </IonCol>
-                </IonRow>
+                <Link
+                  // onClick={(e) => {
+                  //   e.preventDefault();
+                  //   history.push(`/class/${classItem.class_id}`);
+                  //   <Redirect exact from="/class" to={`/class/${classItem.class_id}`} />
+                  // }}
+                   style={{ textDecoration: 'none' }} to={`/class/${classItem.class_id}`}>
+                  <IonRow id="open-loading" className="ion-justify-content-between ion-align-items-center ion-text-center">
+                    <IonLoading className='loading-page'trigger="open-loading" message="Please wait ..." duration={900} spinner="circular" />
+                    <IonCol className="ion-align-self-center" size="8">
+                      <IonText color="white">
+                        {`${classItem.name} ${classItem.speciality} ${classItem.level} ${classItem.year_college}`}
+                      </IonText>
+                    </IonCol>
+                    <IonCol className="ion-align-self-center" size="4">
+                      <IonButton
+                        id={`open-modal-update-${classItem.class_id}`}
+                        size="small"
+                        onClick={() => handleOpenModal(classItem)}
+                      >
+                        <IonIcon src={updateIcon} />
+                      </IonButton>
+                      <IonButton size="small" onClick={() => deleteClass(classItem.class_id)}>
+                        <IonIcon src={deleteIcon} />
+                      </IonButton>
+                    </IonCol>
+                  </IonRow>
+                </Link>
               </IonGrid>
             </IonItem>
             {classId === classItem.class_id && (

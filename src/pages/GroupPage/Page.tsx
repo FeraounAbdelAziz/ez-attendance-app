@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonList, IonModal, IonRow, IonSearchbar, IonTabButton, IonText, IonTitle, IonToolbar } from '@ionic/react'
+import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonList, IonLoading, IonModal, IonRow, IonSearchbar, IonTabButton, IonText, IonTitle, IonToolbar } from '@ionic/react'
 import { Formik, Form } from 'formik';
 import React, { useEffect, useRef, useState } from 'react'
 import FormikControl from '../../components/FormikComponents/FormikControl';
@@ -6,7 +6,10 @@ import { supabase } from '../../supabaseClient';
 import * as Yup from 'yup';
 import deleteIcon from "/assets/deleteIcon.svg";
 import updateIcon from "/assets/updateIcon.svg";
-import "./AddGroupModal.css"
+import AddGroupModal from './AddGroupModal';
+
+import './AddGroupModal.css';
+
 const GroupPage = () => {
     const modal = useRef<HTMLIonModalElement>(null);
     const [groups, setGroups] = useState<any>([]);
@@ -14,28 +17,33 @@ const GroupPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         const fetchGroups = async () => {
-            const { data: groups } = await supabase
-                .from('group')
-                .select('*')
+            const { data: groups } = await supabase.from('group').select('*');
             setGroups(groups);
         };
 
         fetchGroups();
     }, [groups]);
 
+
+
+
     const deleteClass = async (value: any) => {
         await supabase.from('group').delete().eq('group_id', value);
     };
-    const validationSchemaUpdate = Yup.object({
-        group_name: Yup.string()
-            .required('Name is required')
-            .min(10, 'Name must be at least 10 characters'),
+const validationSchema = Yup.object({
+    group_name: Yup.string()
+      .required('Group Name is required')
+      .test(
+        'is-valid-group-name',
+        'Invalid group name format',
+        (value) => /^G\d+$/.test(value)
+      )
+      .max(3, 'Group Name must be at max 3 characters'),
 
-        group_type: Yup.string()
-            .required('Type is required')
-            .matches(/^(TD|TP)$/, 'must be "TD" or "TP"'),
-    });
-
+    group_type: Yup.string()
+      .required('Group Type is required')
+      .matches(/^(TP|TD)$/, 'Group Type must be TP or TD'),
+  });
     const onSubmitUpdate = async (values: any) => {
         const { group_name, group_type } = values;
         await supabase.from('group').update({ group_name, group_type }).eq('group_id', GroupId).select();
@@ -52,6 +60,7 @@ const GroupPage = () => {
     return (
         <React.Fragment>
             <IonContent fullscreen>
+
                 <IonHeader>
                     <IonToolbar>
                         <IonTitle>Toolbar</IonTitle>
@@ -60,6 +69,10 @@ const GroupPage = () => {
                         <IonSearchbar></IonSearchbar>
                     </IonToolbar>
                 </IonHeader>
+                <AddGroupModal />
+
+
+
                 {groups && groups.map((group: { group_id: any, group_type: any, group_name: any }, index: number) =>
                 (
                     <IonList key={index}>
@@ -90,7 +103,7 @@ const GroupPage = () => {
                             <IonModal id="update-modal-group" ref={modal} isOpen={isModalOpen} trigger={`open-modal-update-group${group.group_id}`}>
                                 {/* ... (modal content) */}
                                 <IonToolbar>
-                                    <IonTitle>Update Class </IonTitle>
+                                    <IonTitle>Update Group </IonTitle>
                                     <IonButtons slot="end">
                                         <IonButton color="warning" onClick={() => handleCloseModal()}>
                                             Close
@@ -102,7 +115,7 @@ const GroupPage = () => {
                                         group_name: group.group_name,
                                         group_type: group.group_type,
                                     }}
-                                    validationSchema={validationSchemaUpdate}
+                                    validationSchema={validationSchema}
                                     onSubmit={onSubmitUpdate}
                                 >
                                     {(formik) => (
@@ -140,6 +153,10 @@ const GroupPage = () => {
                     </IonList>
                 )
                 )}
+
+
+
+
             </IonContent>
         </React.Fragment>
     )
