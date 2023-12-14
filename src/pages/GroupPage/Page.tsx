@@ -7,17 +7,21 @@ import * as Yup from 'yup';
 import deleteIcon from "/assets/deleteIcon.svg";
 import updateIcon from "/assets/updateIcon.svg";
 import AddGroupModal from './AddGroupModal';
-
-import './AddGroupModal.css';
-
+import { useParams } from 'react-router';
+import './../global.css'
 const GroupPage = () => {
     const modal = useRef<HTMLIonModalElement>(null);
+    const params = useParams()
+    const { class_id , class_name}: any = params
     const [groups, setGroups] = useState<any>([]);
+
     const [GroupId, setGroupId] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         const fetchGroups = async () => {
-            const { data: groups } = await supabase.from('group').select('*');
+            const { data: groups } = await supabase.from('group')
+                .select('*')
+                .eq('class_id', class_id);
             setGroups(groups);
         };
 
@@ -30,32 +34,33 @@ const GroupPage = () => {
     const deleteClass = async (value: any) => {
         await supabase.from('group').delete().eq('group_id', value);
     };
-const validationSchema = Yup.object({
-    group_name: Yup.string()
-      .required('Group Name is required')
-      .test(
-        'is-valid-group-name',
-        'Invalid group name format',
-        (value) => /^G\d+$/.test(value)
-      )
-      .max(3, 'Group Name must be at max 3 characters'),
+    const validationSchema = Yup.object({
+        group_name: Yup.string()
+            .required('Group Name is required')
+            .test(
+                'is-valid-group-name',
+                'Invalid group name format',
+                (value) => /^G\d+$/.test(value)
+            )
+            .max(3, 'Group Name must be at max 3 characters'),
 
-    group_type: Yup.string()
-      .required('Group Type is required')
-      .matches(/^(TP|TD)$/, 'Group Type must be TP or TD'),
-  });
+        group_type: Yup.string()
+            .required('Group Type is required')
+            .matches(/^(TP|TD)$/, 'Group Type must be TP or TD'),
+    });
     const onSubmitUpdate = async (values: any) => {
         const { group_name, group_type } = values;
         await supabase.from('group').update({ group_name, group_type }).eq('group_id', GroupId).select();
     };
 
     const handleOpenModal = (GroupId: { group_id: any }) => {
-        setIsModalOpen(true);
         setGroupId(GroupId.group_id);
+        setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false)
+
     };
     return (
         <React.Fragment>
@@ -63,7 +68,7 @@ const validationSchema = Yup.object({
 
                 <IonHeader>
                     <IonToolbar>
-                        <IonTitle>Toolbar</IonTitle>
+                        <IonTitle>Group Section {class_name} </IonTitle>
                     </IonToolbar>
                     <IonToolbar>
                         <IonSearchbar></IonSearchbar>
@@ -71,7 +76,9 @@ const validationSchema = Yup.object({
                 </IonHeader>
                 <AddGroupModal />
 
-
+                {groups?.length === 0 ?
+                    <IonText className='ion-padding-top' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} color="medium"><i>Empty ! , Click the button below to add a group !</i> </IonText>
+                    : null}
 
                 {groups && groups.map((group: { group_id: any, group_type: any, group_name: any }, index: number) =>
                 (
@@ -88,7 +95,8 @@ const validationSchema = Yup.object({
                                         <IonButton
                                             id={`open-modal-update-group-${group.group_id}`}
                                             size="small"
-                                            onClick={() => handleOpenModal(group)}
+                                            onClick={() => handleOpenModal(group)
+                                            }
                                         >
                                             <IonIcon src={updateIcon} />
                                         </IonButton>
@@ -100,7 +108,7 @@ const validationSchema = Yup.object({
                             </IonGrid>
                         </IonItem>
                         {GroupId === group.group_id && (
-                            <IonModal id="update-modal-group" ref={modal} isOpen={isModalOpen} trigger={`open-modal-update-group${group.group_id}`}>
+                            <IonModal id="update-modal-group" ref={modal} isOpen={isModalOpen} trigger={`open-modal-update-group-${group.group_id}`}>
                                 {/* ... (modal content) */}
                                 <IonToolbar>
                                     <IonTitle>Update Group </IonTitle>

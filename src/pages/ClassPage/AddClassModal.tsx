@@ -5,7 +5,7 @@ import FormikControl from "../../components/FormikComponents/FormikControl";
 import { supabase } from '../../supabaseClient';
 import { IonButton, IonButtons, IonFab, IonFabButton, IonIcon, IonItem, IonList, IonModal, IonTitle, IonToolbar } from '@ionic/react';
 import { add } from 'ionicons/icons';
-import './AddClassModal.css';
+// import './AddClassModal.css';
 
 export default function AddClassModal() {
   const modal = React.useRef<HTMLIonModalElement>(null);
@@ -23,15 +23,18 @@ export default function AddClassModal() {
   };
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required('Required')
-      .max(20, 'Name should not exceed 20 characters')
-      .matches(/^[a-zA-Z0-9\s]+$/, 'Name should only contain letters and numbers'),
+    .required('Required')
+    .max(20, 'Name should not exceed 20 characters')
+    .matches(/^[a-zA-Z0-9]+$/, 'Name should only contain letters and numbers without spaces'),
+  
 
     speciality: Yup.string()
-      .max(20, 'Speciality should not exceed 20 characters'),
+      .max(20, 'Speciality should not exceed 20 characters')
+      .min(5, 'Speciality should not at least 5 characters'),
 
     level: Yup.string()
-      .max(10, 'Level should not exceed 10 characters'),
+      .max(10, 'Level should not exceed 10 characters')
+      .min(5, 'Level should not at least 5 characters'),
 
     year_college: Yup.string()
       .required('Year is required')
@@ -63,7 +66,7 @@ export default function AddClassModal() {
         <IonToolbar>
           <IonTitle>Add Class</IonTitle>
           <IonButtons slot="end">
-            <IonButton color="white" onClick={() => dismiss()}>
+            <IonButton color="warning" onClick={() => dismiss()}>
               Close
             </IonButton>
           </IonButtons>
@@ -115,7 +118,7 @@ export default function AddClassModal() {
                     />
                   </IonItem>
                   <IonItem>
-                    <IonButton type="submit" color={"light"}>
+                    <IonButton type="submit" color="warning">
                       submit
                     </IonButton>
                   </IonItem>

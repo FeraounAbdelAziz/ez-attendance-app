@@ -6,11 +6,10 @@ import updateIcon from "/assets/updateIcon.svg";
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import FormikControl from '../../components/FormikComponents/FormikControl';
-import './Page.css';
-import './AddClassModal.css';
 import AddClassModal from './AddClassModal';
 import { Link } from 'react-router-dom';
-import { Redirect, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
+import './../global.css'
 
 
 const ClassPage = () => {
@@ -21,7 +20,7 @@ const ClassPage = () => {
 
   useEffect(() => {
     const fetchClasses = async () => {
-      const { data } = await supabase.from('class').select('*');
+      const { data } = await supabase.from('class').select('*').order('year_college', { ascending: true });
       setClasses(data);
     };
 
@@ -58,52 +57,52 @@ const ClassPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false)
   };
-
   const history = useHistory();
   return (
     <React.Fragment>
-      <IonContent fullscreen>
+      <IonContent fullscreen >
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Toolbar</IonTitle>
+            <IonTitle>Class Section</IonTitle>
           </IonToolbar>
           <IonToolbar>
             <IonSearchbar></IonSearchbar>
           </IonToolbar>
         </IonHeader>
         <AddClassModal />
+        {classes.length === 0 ?
+          <IonText className='ion-padding-top' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} color="medium"><i>Empty ! , Click the button below to add a class !</i> </IonText>
+          : null}
         {classes?.map((classItem: { class_id: any; name: any; speciality: any; level: any; year_college: any }, index: any) => (
           <IonList key={index}>
             <IonItem>
               <IonGrid>
-                <Link
-                  // onClick={(e) => {
-                  //   e.preventDefault();
-                  //   history.push(`/class/${classItem.class_id}`);
-                  //   <Redirect exact from="/class" to={`/class/${classItem.class_id}`} />
-                  // }}
-                   style={{ textDecoration: 'none' }} to={`/class/${classItem.class_id}`}>
-                  <IonRow id="open-loading" className="ion-justify-content-between ion-align-items-center ion-text-center">
-                    <IonLoading className='loading-page'trigger="open-loading" message="Please wait ..." duration={900} spinner="circular" />
-                    <IonCol className="ion-align-self-center" size="8">
+
+                <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
+                  <IonLoading className='loading-page' trigger="open-loading" message="Please wait ..." duration={900} spinner="circular" />
+                  <IonCol className="ion-align-self-center" size="8">
+                    <Link
+                      id="open-loading"
+                      style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${classItem.class_id}/${classItem.name}`}>
                       <IonText color="white">
                         {`${classItem.name} ${classItem.speciality} ${classItem.level} ${classItem.year_college}`}
                       </IonText>
-                    </IonCol>
-                    <IonCol className="ion-align-self-center" size="4">
-                      <IonButton
-                        id={`open-modal-update-${classItem.class_id}`}
-                        size="small"
-                        onClick={() => handleOpenModal(classItem)}
-                      >
-                        <IonIcon src={updateIcon} />
-                      </IonButton>
-                      <IonButton size="small" onClick={() => deleteClass(classItem.class_id)}>
-                        <IonIcon src={deleteIcon} />
-                      </IonButton>
-                    </IonCol>
-                  </IonRow>
-                </Link>
+                    </Link>
+                  </IonCol>
+
+                  <IonCol className="ion-align-self-center" size="4">
+                    <IonButton
+                      id={`open-modal-update-${classItem.class_id}`}
+                      size="small"
+                      onClick={() => handleOpenModal(classItem)}
+                    >
+                      <IonIcon src={updateIcon} />
+                    </IonButton>
+                    <IonButton size="small" onClick={() => deleteClass(classItem.class_id)}>
+                      <IonIcon src={deleteIcon} />
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
               </IonGrid>
             </IonItem>
             {classId === classItem.class_id && (
@@ -171,7 +170,7 @@ const ClassPage = () => {
                           />
                         </IonItem>
                         <IonItem>
-                          <IonButton type="submit">Submit</IonButton>
+                          <IonButton color="warning" type="submit">Submit</IonButton>
                         </IonItem>
                       </IonList>
                     </Form>
@@ -182,7 +181,7 @@ const ClassPage = () => {
           </IonList>
         ))}
       </IonContent>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 
