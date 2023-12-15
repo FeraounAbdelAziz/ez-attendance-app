@@ -6,8 +6,8 @@ import { supabase } from '../../supabaseClient';
 import * as Yup from 'yup';
 import deleteIcon from "/assets/deleteIcon.svg";
 import updateIcon from "/assets/updateIcon.svg";
-import AddGroupModal from './AddGroupModal';
 import { useParams } from 'react-router';
+import AddGroupModal from './AddGroupModal';
 import './../global.css'
 const GroupPage = () => {
     const modal = useRef<HTMLIonModalElement>(null);
@@ -94,14 +94,16 @@ const GroupPage = () => {
                                     <IonCol className="ion-align-self-center" size="4">
                                         <IonButton
                                             id={`open-modal-update-group-${group.group_id}`}
-                                            size="small"
+                                            // size="small"
                                             onClick={() => handleOpenModal(group)
                                             }
                                         >
                                             <IonIcon src={updateIcon} />
                                         </IonButton>
-                                        <IonButton size="small" onClick={() => deleteClass(group.group_id)}>
-                                            <IonIcon src={deleteIcon} />
+                                        <IonButton  onClick={() => deleteClass(group.group_id)}>
+                                            <IonIcon
+                                            //  size="small"
+                                             src={deleteIcon} />
                                         </IonButton>
                                     </IonCol>
                                 </IonRow>

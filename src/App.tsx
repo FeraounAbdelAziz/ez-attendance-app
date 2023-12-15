@@ -22,6 +22,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
+import ExcelFile from './pages/ClassPage/ExcelFile';
 
 
 setupIonicReact();
@@ -38,6 +39,7 @@ const App: React.FC = () => {
               <Switch>
                 <Route path="/class/:class_id/:class_name" component={GroupPage} />
                 <Route exact path="/class" component={ClassPage} />
+                <Route exact path="/excel" component={ExcelFile} />
                 <Redirect exact from="/" to="/class" />
               </Switch>
             </Router>

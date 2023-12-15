@@ -13,8 +13,6 @@ export default function AddClassModal() {
   function dismiss() {
     modal.current?.dismiss();
   }
-
-
   const initialValues = {
     name: '',
     speciality: '',
@@ -49,9 +47,9 @@ export default function AddClassModal() {
         values
       ])
       .select()
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
+        if(data) {
+          dismiss()
+        }
   };
   return (
     <>

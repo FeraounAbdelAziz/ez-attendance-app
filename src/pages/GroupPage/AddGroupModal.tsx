@@ -6,21 +6,31 @@ import { supabase } from '../../supabaseClient';
 import { IonButton, IonButtons, IonFab, IonFabButton, IonIcon, IonItem, IonList, IonModal, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { useParams } from 'react-router';
-// import './AddGroupModal.css';
+import * as XLSX from 'xlsx'
 
+interface studentJson {
+  fisrt_name: any
+  second_name: any
+  birthdate: any
+  week1: any
+  week2: any
+  week3: any
+  week4: any
+  week5: any
+}
 export default function AddGroupModal() {
   const modal = React.useRef<HTMLIonModalElement>(null);
   const params = useParams()
   const { class_id }: any = params
-
+  const [fileName, setFileName] = React.useState('')
   function dismiss() {
     modal.current?.dismiss();
   }
   const initialValues = {
     group_name: 'G',
     group_type: '',
+    group_file: '',
   };
-
   const validationSchema = Yup.object({
     group_name: Yup.string()
       .required('Group Name is required')
@@ -34,25 +44,103 @@ export default function AddGroupModal() {
     group_type: Yup.string()
       .required('Group Type is required')
       .matches(/^(TP|TD)$/, 'Group Type must be TP or TD'),
-  });
 
+  });
   const [showErrorToast, setShowErrorToast] = React.useState(false);
 
+  const [studentJson, setStudentJson] = React.useState<studentJson[]>();
+
   const onSubmit = async (values: any) => {
-    const { group_name, group_type } = values
-    const { error } = await supabase
-      .from('group')
-      .insert([
-        { group_name, group_type, class_id }
-      ])
-      .select()
-    if (error) {
-      setShowErrorToast(true);
+    let group_id = '';
+    setFileName('');
+    if (studentJson) {
+      const { group_name, group_type } = values;
+
+      const { data: groupData, error: groupError } = await supabase
+        .from('group')
+        .insert([
+          { group_name, group_type, class_id }
+        ])
+        .select();
+
+      if (groupError) {
+        setShowErrorToast(true);
+        return;
+      }
+
+      group_id = groupData[0].group_id;
     }
-  }
+    const updatedStudentJson = studentJson?.slice(1).map((student) => ({
+      ...student,
+      group_id,
+    }));
+    setStudentJson(updatedStudentJson);
+    const { data: studentsData, error: studentError } = await supabase
+      .from('student')
+      .insert(updatedStudentJson) // Insert the updated studentJson
+      .select();
+
+    console.log('====================================');
+    console.log(studentError, " , this is student payload :", studentsData);
+    console.log('====================================');
+  };
+
+
+
+
+
+
+
+
+
+
+  const handleFile = async (e: any) => {
+    const file = e.target.files[0];
+    setFileName(file.name);
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData: any = XLSX.utils.sheet_to_json(worksheet, {
+      header: 1, // Assuming the first row contains headers
+      dateNF: 'dd/mm/yyyy', // Date format
+    });
+
+    // Update the studentJson state
+    setStudentJson(
+      jsonData.map((item: any) => ({
+        first_name: item[1],
+        second_name: item[2],
+        birthdate: item[3],
+        week1: item[4],
+        week2: item[5],
+        week3: item[6],
+        week4: item[7],
+        week5: item[8],
+      }))
+    );
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <>
+
       <IonToast
         isOpen={showErrorToast}
         onDidDismiss={() => setShowErrorToast(false)}
@@ -66,15 +154,20 @@ export default function AddGroupModal() {
           </IonButton>
         </IonFabButton>
       </IonFab>
+
       <IonModal id="example-modal-add-group" ref={modal} trigger="open-modal">
         <IonToolbar>
           <IonTitle>Add Group</IonTitle>
           <IonButtons slot="end">
-            <IonButton color="warning" onClick={() => dismiss()}>
+            <IonButton color="warning" onClick={() => {
+              dismiss();
+              setStudentJson(undefined);
+            }}>
               Close
             </IonButton>
           </IonButtons>
         </IonToolbar>
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -100,6 +193,23 @@ export default function AddGroupModal() {
                       label="Group Type : "
                     />
                   </IonItem>
+                  <IonItem>
+                    {/* <FormikControl
+                      control="input"
+                      type="file"
+                      name="group_file"
+                      label="Group file : "
+                      onChange={(e: any) => handleFile(e)}
+                    /> */}
+                    <input className='Input-File-Group-Add' type="file" id="file-input" name="group_file" onChange={(e: any) => handleFile(e)} />
+                    {/* <label id="file-input-label" htmlFor="file-input">Select a File</label> */}
+                    {
+                      fileName ? <>{fileName}</> : <label id="file-input-label" htmlFor="file-input">Select a File</label>
+                    }
+                  </IonItem>
+                  {/* <IonItem>
+                    {fileName}
+                  </IonItem> */}
                   <IonItem>
                     <IonButton id="open-toast-group" type="submit">Submit</IonButton>
                   </IonItem>

@@ -15,17 +15,26 @@ ion-modal#update-modal-group {
     --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --backdrop-opacity: 0.2
 }
-
+ion-modal#example-modal-add-group {
+    overflow: scroll;
+    --height: 280px;
+    --width: 95%;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --backdrop-opacity: 0.2
+}
 ion-modal#example-modal::part(backdrop),
 ion-modal#update-modal::part(backdrop),
-ion-modal#update-modal-group::part(backdrop) {
+ion-modal#update-modal-group::part(backdrop) ,
+ion-modal#example-modal-add-group::part(backdrop){
     background: rgba(209, 213, 219);
     opacity: 1;
 }
 
 ion-modal#example-modal ion-toolbar,
 ion-modal#update-modal ion-toolbar,
-ion-modal#update-modal-group ion-toolbar {
+ion-modal#update-modal-group ion-toolbar,
+ion-modal#example-modal-add-group ion-toolbar{
     --background: rgb(63, 63, 63);
     --color: white;
 }
@@ -35,6 +44,8 @@ ion-modal#update-modal-group ion-toolbar {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 1rem ;
+    padding-bottom: 1rem ;
 }
 
 .IonList-Input input {
@@ -52,4 +63,20 @@ ion-modal#update-modal-group ion-toolbar {
     color: red;
     padding: 8px;
     font-size: 10px;
+}
+
+#file-input {
+    display: none;
+}
+
+#file-input-label {
+    --padding-top: 4px;
+    --padding-start: 0.9em;
+    --padding-end: 0.9em;
+    --padding-bottom: 4px;
+    --background : var(--ion-color-primary, #3880ff);
+    --color : var(--ion-color-primary-contrast, #fff);
+    --transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1), background-color 15ms linear, color 15ms linear;
+    --border-radius: 4px; 
+    
 }
