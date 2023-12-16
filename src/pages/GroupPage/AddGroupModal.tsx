@@ -36,9 +36,11 @@ export default function AddGroupModal() {
       .test(
         'is-valid-group-name',
         'Invalid group name format',
-        (value) => /^G\d+$/.test(value)
+        (value) => /^G\d{1,2}$/.test(value)  // Enforce 1 or 2 digits after 'G'
       )
-      .max(3, 'Group Name must be at max 3 characters'),
+      .max(3, 'Group Name must be at max 3 characters')
+    ,
+
 
     group_type: Yup.string()
       .required('Group Type is required')
@@ -74,7 +76,7 @@ export default function AddGroupModal() {
     }
     const updatedStudentJson = studentJson?.slice(8).map((student) => ({
       ...student,
-      group_id,
+      group_id, class_id,
     }));
     setStudentJson(updatedStudentJson);
     const { data: studentsData, error: studentError } = await supabase
@@ -82,7 +84,7 @@ export default function AddGroupModal() {
       .insert(updatedStudentJson)
       .select();
 
-    console.log('updatedStudentJson : ',updatedStudentJson);
+    console.log('updatedStudentJson : ', updatedStudentJson);
     console.log(studentError, " , this is student payload :", studentsData);
     console.log('====================================');
     setStudentJson(undefined);
@@ -104,19 +106,19 @@ export default function AddGroupModal() {
     const workbook = XLSX.read(data);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jsonData: any = XLSX.utils.sheet_to_json(worksheet, {
-      header: 1, 
-      dateNF: 'dd/mm/yyyy', 
+      header: 1,
+      dateNF: 'dd/mm/yyyy',
     });
     console.log('====================================');
     console.log("jsonData : ", jsonData.map((item: any) => ({
-        first_name: item[1],
-        second_name: item[2],
-        week1: item[4],
-        week2: item[5],
-        week3: item[6],
-        week4: item[7],
-        week5: item[8],
-      })));
+      first_name: item[1],
+      second_name: item[2],
+      week1: item[4],
+      week2: item[5],
+      week3: item[6],
+      week4: item[7],
+      week5: item[8],
+    })));
     console.log('====================================');
 
     setStudentJson(

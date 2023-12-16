@@ -37,13 +37,14 @@ const GroupPage = () => {
     };
     const validationSchema = Yup.object({
         group_name: Yup.string()
-            .required('Group Name is required')
-            .test(
-                'is-valid-group-name',
-                'Invalid group name format',
-                (value) => /^G\d+$/.test(value)
-            )
-            .max(3, 'Group Name must be at max 3 characters'),
+        .required('Group Name is required')
+        .test(
+            'is-valid-group-name',
+            'Invalid group name format',
+            (value) => /^G\d{2,}$/.test(value)
+        )
+        .max(3, 'Group Name must be at max 3 characters')
+    ,
 
         group_type: Yup.string()
             .required('Group Type is required')
@@ -88,13 +89,13 @@ const GroupPage = () => {
                             <IonGrid>
                                 <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
                                     <IonCol className="ion-align-self-center" size="8">
-                                    <Link
-                                        style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${group.group_name}`}>
+                                        <Link
+                                            style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${group.group_id}/${group.group_name}`}>
                                             <IonText color="white">
                                                 {`${group.group_name} ${group.group_type}`}
                                             </IonText>
-                                    </Link>
-                                        </IonCol>
+                                        </Link>
+                                    </IonCol>
                                     <IonCol className="ion-align-self-center" size="4">
                                         <IonButton
                                             id={`open-modal-update-group-${group.group_id}`}

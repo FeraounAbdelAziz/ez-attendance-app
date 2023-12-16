@@ -30,6 +30,7 @@ import { supabase } from '../../../supabaseClient';
 import AddClassModal from '../../ClassPage/AddClassModal';
 import FormikControl from '../../../components/FormikComponents/FormikControl';
 import './StudentPage.css'
+import "../../global.css"
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -40,15 +41,17 @@ import Paper from '@mui/material/Paper';
 const StudentPage = () => {
     const [students, setStudents] = useState<any[] | null>(null);
     const params = useParams()
-    const {group_name} : any = params
+    const { group_name, group_id, class_id }: any = params
 
-    
+
     useEffect(() => {
         const fetchStudents = async () => {
             try {
                 const { data: fetchedStudents, error } = await supabase
                     .from('student')
-                    .select('*');
+                    .select('*')
+                    .eq('class_id', class_id)
+                    .eq('group_id', group_id);
 
                 if (error) {
                     console.error('Error fetching students:', error);
@@ -90,35 +93,80 @@ const StudentPage = () => {
                     </IonRow> */}
 
                     <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <Table color="danger" sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>number</TableCell>
-                                    <TableCell align="right">first name</TableCell>
-                                    <TableCell align="right">second name</TableCell>
-                                    <TableCell align="right">week1</TableCell>
-                                    <TableCell align="right">week2</TableCell>
-                                    <TableCell align="right">week3</TableCell>
-                                    <TableCell align="right">week4</TableCell>
-                                    <TableCell align="right">week5</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align='left'>number</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">first name</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">second name</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">week1</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">week2</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">week3</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">week4</TableCell>
+                                    <TableCell  sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: '#f5d555', // Set text color to #f5d555 for rows
+                                        }} align="left">week5</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {students?.map((student, index) => (
                                     <TableRow
                                         key={index}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        sx={{
+                                            '&:last-child td, &:last-child th': { border: 0 },
+                                            color: 'white', // Set text color to white for rows
+                                        }}
                                     >
-                                        <TableCell component="th" scope="row">
-                                            {index}
+                                        <TableCell
+                                            component="th"
+                                            scope="row"
+                                            style={{ color: '#f5d555' }} // Set text color to white for cells
+                                        >
+                                            {index + 1}
                                         </TableCell>
-                                        <TableCell align="right">{student.first_name}</TableCell>
-                                        <TableCell align="right">{student.second_name}</TableCell>
-                                        <TableCell align="right">{student.week1}</TableCell>
-                                        <TableCell align="right">{student.week2}</TableCell>
-                                        <TableCell align="right">{student.week3}</TableCell>
-                                        <TableCell align="right">{student.week4}</TableCell>
-                                        <TableCell align="right">{student.week5}</TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.first_name}
+                                        </TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.second_name}
+                                        </TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.week1}
+                                        </TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.week2}
+                                        </TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.week3}
+                                        </TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.week4}
+                                        </TableCell>
+                                        <TableCell align="left" style={{ color: 'white' }}>
+                                            {student.week5}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

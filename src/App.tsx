@@ -38,7 +38,7 @@ const App: React.FC = () => {
           <IonRouterOutlet>
             <Router>
               <Switch>
-                <Route exact path="/class/:class_id/:class_name/:group_name" component={StudentPage} />
+                <Route exact path="/class/:class_id/:class_name/:group_id/:group_name" component={StudentPage} />
                 <Route exact path="/class/:class_id/:class_name" component={GroupPage} />
                 <Route exact path="/class" component={ClassPage} />
                 <Redirect exact from="/" to="/class" />
