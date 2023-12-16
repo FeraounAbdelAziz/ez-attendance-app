@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
+  IonAccordion,
+  IonAccordionGroup,
   IonButton,
   IonButtons,
   IonCol,
@@ -8,8 +10,8 @@ import {
   IonHeader,
   IonIcon,
   IonItem,
+  IonLabel,
   IonList,
-  IonLoading,
   IonModal,
   IonRow,
   IonSearchbar,
@@ -25,9 +27,9 @@ import { Form, Formik } from 'formik';
 import FormikControl from '../../components/FormikComponents/FormikControl';
 import AddClassModal from './AddClassModal';
 import { Link } from 'react-router-dom';
-import { useHistory } from 'react-router';
 import './../global.css';
 import { warning } from 'ionicons/icons';
+
 
 const ClassPage = () => {
   const modal = useRef<HTMLIonModalElement>(null);
@@ -38,16 +40,42 @@ const ClassPage = () => {
 
   useEffect(() => {
     const fetchClasses = async () => {
-      const { data } = await supabase.from('class').select('*').order('year_college', { ascending: true });
-      setClasses(data);
+      const { data: ClassData } = await supabase.from('class').select('*').order('year_college', { ascending: true });
+
+      const groupedClasses = ClassData
+        ? ClassData.reduce((acc, classItem) => {
+          const yearCollege = classItem.year_college;
+          if (!acc[yearCollege]) {
+            acc[yearCollege] = [];
+          }
+          acc[yearCollege].push(classItem);
+          return acc;
+        }, {})
+        : {};
+
+    
+      const classesArray = Object.entries(groupedClasses).map(([year_college, data]) => ({
+        year_college,
+        data,
+      }));
+
+
+      const sortedclassesArray = classesArray.sort((a, b) => {
+        const yearA = parseInt(a.year_college.split('/')[0], 10);
+        const yearB = parseInt(b.year_college.split('/')[0], 10);
+        return yearB - yearA;
+      });
+      setClasses(sortedclassesArray);
     };
-
     fetchClasses();
-  }, [classes]);
+  }, [classes]); 
+  // useEffect(() => {
+  //   console.log('====================================');
+  //   console.log("Classes : ", classes);
+  //   console.log('====================================');
+  // }, [classes]);
 
-  const deleteClass = async (value: any) => {
-    await supabase.from('class').delete().eq('class_id', value);
-  };
+
 
   const validationSchemaUpdate = Yup.object({
     name: Yup.string()
@@ -80,10 +108,7 @@ const ClassPage = () => {
     setIsDeleteConfirmationOpen(false);
   };
 
-  const handleConfirmDelete = async () => {
-    await supabase.from('class').delete().eq('class_id', deleteItemId);
-    handleCloseDeleteConfirmation();
-  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = (classItem: { class_id: any }) => {
@@ -95,7 +120,14 @@ const ClassPage = () => {
     setIsModalOpen(false)
   };
 
-  const history = useHistory();
+  const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
+
+  useEffect(() => {
+    if (!accordionGroup.current) {
+      return;
+    }
+    accordionGroup.current.value = ['first', 'third'];
+  }, []);
 
   return (
     <React.Fragment>
@@ -109,146 +141,162 @@ const ClassPage = () => {
           </IonToolbar>
         </IonHeader>
         <AddClassModal />
-        {classes.length === 0 ?
-          <IonText className='ion-padding-top' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} color="medium"><i>Empty ! , Click the button below to add a class !</i> </IonText>
-          : null}
-        {classes?.map((classItem: { class_id: any; name: any; speciality: any; level: any; year_college: any }, index: any) => (
-          <IonList key={index}>
-            <IonItem>
-              <IonGrid>
-                <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
-                  <IonCol className="ion-align-self-center" size="8">
 
-                    <Link
-                      style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${classItem.class_id}/${classItem.name}`}>
-                      <IonText color="white">
-                        {`${classItem.name} ${classItem.speciality} ${classItem.level} ${classItem.year_college}`}
-                      </IonText>
-                    </Link>
-                  </IonCol>
-                  <IonCol className="ion-align-self-center" size="4">
-                    <IonButton
-                      // size="small"
-                      onClick={() => handleOpenModal(classItem)}
-                    >
-                      <IonIcon src={updateIcon} />
-                    </IonButton>
-                    <IonButton
-                      // size="small"
-                      onClick={() => handleOpenDeleteConfirmation(classItem.class_id)}
-                    >
-                      <IonIcon src={deleteIcon} />
-                    </IonButton>
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonItem>
 
-            {/* Delete Confirmation Modal */}
-            <IonModal
-              id={`delete-confirmation-modal-${classItem.class_id}`}
-              isOpen={isDeleteConfirmationOpen && deleteItemId === classItem.class_id}
-              onDidDismiss={handleCloseDeleteConfirmation}
-            >
-              <IonToolbar>
-                <IonTitle>Confirm Delete</IonTitle>
-                <IonButtons slot="end">
-                  <IonButton onClick={handleCloseDeleteConfirmation}>
-                    Cancel
-                  </IonButton>
-                  <IonButton color="danger" onClick={handleConfirmDelete}>
-                    Delete
-                  </IonButton>
-                </IonButtons>
-              </IonToolbar>
-              <IonContent className='ion-text-center' style={{ '--padding-top': '16px' }}>
-                <IonText>
-                  <IonText color="warning">
-                    <IonIcon icon={warning}></IonIcon>
-                  </IonText>
-                  {" "}
-                  Are you sure you want to delete this class?
-                  <br />
-                  that will cause to all groups to delete !
-                </IonText>
-              </IonContent>
-            </IonModal>
+        <IonAccordionGroup ref={accordionGroup} multiple={true}>
+          {classes?.map((yearCollege: any, index: any) => {
+            return (
+              <IonAccordion value={yearCollege.year_college} key={index}>
+                <IonItem slot="header" color="light">
+                  <IonLabel className='ion-text-center'>{yearCollege.year_college}</IonLabel>
+                </IonItem>
 
-            {/* Update Modal */}
-            {classId === classItem.class_id && (
-              <IonModal id="update-modal" ref={modal} isOpen={isModalOpen} onDidDismiss={handleCloseModal}>
-                <IonToolbar>
-                  <IonTitle>Update Class </IonTitle>
-                  <IonButtons slot="end">
-                    <IonButton color="warning" onClick={() => handleCloseModal()}>
-                      Close
-                    </IonButton>
-                  </IonButtons>
-                </IonToolbar>
-                <Formik
-                  initialValues={{
-                    name: classItem.name,
-                    speciality: classItem.speciality,
-                    level: classItem.level,
-                    year_college: classItem.year_college,
-                  }}
-                  validationSchema={validationSchemaUpdate}
-                  onSubmit={onSubmitUpdate}
-                >
-                  {(formik) => (
-                    <Form>
-                      <IonList className="IonList-Input">
-                        <IonItem>
-                          <FormikControl
-                            control="input"
-                            type="text"
-                            name="name"
-                            label="Class name :"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                          />
-                        </IonItem>
-                        <IonItem>
-                          <FormikControl
-                            control="input"
-                            type="text"
-                            name="speciality"
-                            label="Speciality : "
-                            value={formik.values.speciality}
-                            onChange={formik.handleChange}
-                          />
-                        </IonItem>
-                        <IonItem>
-                          <FormikControl
-                            control="input"
-                            type="text"
-                            name="level"
-                            label="Level  : "
-                            value={formik.values.level}
-                            onChange={formik.handleChange}
-                          />
-                        </IonItem>
-                        <IonItem>
-                          <FormikControl
-                            control="input"
-                            type="text"
-                            name="year_college"
-                            label="College year: "
-                            value={formik.values.year_college}
-                            onChange={formik.handleChange}
-                          />
-                        </IonItem>
-                        <IonItem>
-                          <IonButton color="warning" type="submit">Submit</IonButton>
-                        </IonItem>
-                      </IonList>
-                    </Form>
-                  )}
-                </Formik>
-              </IonModal>
-            )}
-          </IonList>
-        ))}
+                {yearCollege.data.map((classData: any, indexClassData: any) => {
+                  return (
+                    <IonItem slot="content" key={indexClassData} >
+                      <IonGrid>
+                        <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
+                          <IonCol className="ion-align-self-center" size="8">
+                            <Link
+                              style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${classData.class_id}/${classData.name}`}>
+                              <IonText color="white">
+                                {`${classData.name} ${classData.speciality} ${classData.level}`}
+                              </IonText>
+                            </Link>
+                          </IonCol>
+                          <IonCol className="ion-align-self-center" size="4">
+                            <IonButton
+                              size="small"
+                              onClick={() => handleOpenModal(classData)}
+                            >
+                              <IonIcon src={updateIcon} />
+                            </IonButton>
+                            <IonButton
+                              size="small"
+                              onClick={() => handleOpenDeleteConfirmation(classData.class_id)}
+                            >
+                              <IonIcon src={deleteIcon} />
+                            </IonButton>
+                          </IonCol>
+                        </IonRow>
+                      </IonGrid>
+
+                      {/* Delete Confirmation Modal */}
+                      <IonModal
+                        id={`delete-confirmation-modal-${classData.class_id}`}
+                        isOpen={isDeleteConfirmationOpen && deleteItemId === classData.class_id}
+                        onDidDismiss={handleCloseDeleteConfirmation}
+                      >
+                        <IonToolbar>
+                          <IonTitle>Confirm Delete</IonTitle>
+                          <IonButtons slot="end">
+                            <IonButton onClick={handleCloseDeleteConfirmation}>
+                              Cancel
+                            </IonButton>
+                            <IonButton color="danger" onClick={async () => {
+                              await supabase.from('class').delete().eq('class_id', deleteItemId);
+                              handleCloseDeleteConfirmation();
+                            }}>
+                              Delete
+                            </IonButton>
+                          </IonButtons>
+                        </IonToolbar>
+                        <IonContent className='ion-text-center' style={{ '--padding-top': '16px' }}>
+                          <IonText>
+                            <IonText color="warning">
+                              <IonIcon icon={warning}></IonIcon>
+                            </IonText>
+                            {" "}
+                            Are you sure you want to delete this class?
+                            <br />
+                            that will cause to all groups to delete !
+                          </IonText>
+                        </IonContent>
+                      </IonModal>
+
+                      {/* Update Modal */}
+                      {classId === classData.class_id && (
+                        <IonModal id="update-modal" ref={modal} isOpen={isModalOpen} onDidDismiss={handleCloseModal}>
+                          <IonToolbar>
+                            <IonTitle>Update Class </IonTitle>
+                            <IonButtons slot="end">
+                              <IonButton color="warning" onClick={() => handleCloseModal()}>
+                                Close
+                              </IonButton>
+                            </IonButtons>
+                          </IonToolbar>
+                          <Formik
+                            initialValues={{
+                              name: classData.name,
+                              speciality: classData.speciality,
+                              level: classData.level,
+                              year_college: classData.year_college,
+                            }}
+                            validationSchema={validationSchemaUpdate}
+                            onSubmit={onSubmitUpdate}
+                          >
+                            {(formik) => (
+                              <Form>
+                                <IonList className="IonList-Input">
+                                  <IonItem>
+                                    <FormikControl
+                                      control="input"
+                                      type="text"
+                                      name="name"
+                                      label="Class name :"
+                                      value={formik.values.name}
+                                      onChange={formik.handleChange}
+                                    />
+                                  </IonItem>
+                                  <IonItem>
+                                    <FormikControl
+                                      control="input"
+                                      type="text"
+                                      name="speciality"
+                                      label="Speciality : "
+                                      value={formik.values.speciality}
+                                      onChange={formik.handleChange}
+                                    />
+                                  </IonItem>
+                                  <IonItem>
+                                    <FormikControl
+                                      control="input"
+                                      type="text"
+                                      name="level"
+                                      label="Level  : "
+                                      value={formik.values.level}
+                                      onChange={formik.handleChange}
+                                    />
+                                  </IonItem>
+                                  <IonItem>
+                                    <FormikControl
+                                      control="input"
+                                      type="text"
+                                      name="year_college"
+                                      label="College year: "
+                                      value={formik.values.year_college}
+                                      onChange={formik.handleChange}
+                                    />
+                                  </IonItem>
+                                  <IonItem>
+                                    <IonButton color="warning" type="submit">Submit</IonButton>
+                                  </IonItem>
+                                </IonList>
+                              </Form>
+                            )}
+                          </Formik>
+                        </IonModal>
+                      )}
+                    </IonItem>
+                  )
+                })}
+
+              </IonAccordion>
+            )
+          })}
+        </IonAccordionGroup>
+
+
       </IonContent>
     </React.Fragment>
   );

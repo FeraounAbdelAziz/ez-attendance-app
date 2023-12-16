@@ -11,7 +11,6 @@ import * as XLSX from 'xlsx'
 interface studentJson {
   fisrt_name: any
   second_name: any
-  birthdate: any
   week1: any
   week2: any
   week3: any
@@ -53,6 +52,9 @@ export default function AddGroupModal() {
   const onSubmit = async (values: any) => {
     let group_id = '';
     setFileName('');
+    console.log('====================================');
+    console.log(studentJson);
+    console.log('====================================');
     if (studentJson) {
       const { group_name, group_type } = values;
 
@@ -70,19 +72,20 @@ export default function AddGroupModal() {
 
       group_id = groupData[0].group_id;
     }
-    const updatedStudentJson = studentJson?.slice(1).map((student) => ({
+    const updatedStudentJson = studentJson?.slice(8).map((student) => ({
       ...student,
       group_id,
     }));
     setStudentJson(updatedStudentJson);
     const { data: studentsData, error: studentError } = await supabase
       .from('student')
-      .insert(updatedStudentJson) // Insert the updated studentJson
+      .insert(updatedStudentJson)
       .select();
 
-    console.log('====================================');
+    console.log('updatedStudentJson : ',updatedStudentJson);
     console.log(studentError, " , this is student payload :", studentsData);
     console.log('====================================');
+    setStudentJson(undefined);
   };
 
 
@@ -101,16 +104,25 @@ export default function AddGroupModal() {
     const workbook = XLSX.read(data);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jsonData: any = XLSX.utils.sheet_to_json(worksheet, {
-      header: 1, // Assuming the first row contains headers
-      dateNF: 'dd/mm/yyyy', // Date format
+      header: 1, 
+      dateNF: 'dd/mm/yyyy', 
     });
+    console.log('====================================');
+    console.log("jsonData : ", jsonData.map((item: any) => ({
+        first_name: item[1],
+        second_name: item[2],
+        week1: item[4],
+        week2: item[5],
+        week3: item[6],
+        week4: item[7],
+        week5: item[8],
+      })));
+    console.log('====================================');
 
-    // Update the studentJson state
     setStudentJson(
       jsonData.map((item: any) => ({
         first_name: item[1],
         second_name: item[2],
-        birthdate: item[3],
         week1: item[4],
         week2: item[5],
         week3: item[6],
@@ -144,7 +156,7 @@ export default function AddGroupModal() {
       <IonToast
         isOpen={showErrorToast}
         onDidDismiss={() => setShowErrorToast(false)}
-        message="An error occurred while adding the group."
+        message="You have already this group !"
         duration={5000}
       />
       <IonFab slot="fixed" vertical="bottom" horizontal="end">

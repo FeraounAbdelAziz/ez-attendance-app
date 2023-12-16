@@ -9,10 +9,11 @@ import updateIcon from "/assets/updateIcon.svg";
 import { useParams } from 'react-router';
 import AddGroupModal from './AddGroupModal';
 import './../global.css'
+import { Link } from 'react-router-dom';
 const GroupPage = () => {
     const modal = useRef<HTMLIonModalElement>(null);
     const params = useParams()
-    const { class_id , class_name}: any = params
+    const { class_id, class_name }: any = params
     const [groups, setGroups] = useState<any>([]);
 
     const [GroupId, setGroupId] = useState('');
@@ -87,10 +88,13 @@ const GroupPage = () => {
                             <IonGrid>
                                 <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
                                     <IonCol className="ion-align-self-center" size="8">
-                                        <IonText color="white">
-                                            {`${group.group_name} ${group.group_type}`}
-                                        </IonText>
-                                    </IonCol>
+                                    <Link
+                                        style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${group.group_name}`}>
+                                            <IonText color="white">
+                                                {`${group.group_name} ${group.group_type}`}
+                                            </IonText>
+                                    </Link>
+                                        </IonCol>
                                     <IonCol className="ion-align-self-center" size="4">
                                         <IonButton
                                             id={`open-modal-update-group-${group.group_id}`}
@@ -100,10 +104,10 @@ const GroupPage = () => {
                                         >
                                             <IonIcon src={updateIcon} />
                                         </IonButton>
-                                        <IonButton  onClick={() => deleteClass(group.group_id)}>
+                                        <IonButton onClick={() => deleteClass(group.group_id)}>
                                             <IonIcon
-                                            //  size="small"
-                                             src={deleteIcon} />
+                                                //  size="small"
+                                                src={deleteIcon} />
                                         </IonButton>
                                     </IonCol>
                                 </IonRow>
