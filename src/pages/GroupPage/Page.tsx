@@ -8,12 +8,19 @@ import deleteIcon from "/assets/deleteIcon.svg";
 import updateIcon from "/assets/updateIcon.svg";
 import { useParams } from 'react-router';
 import AddGroupModal from './AddGroupModal';
-import './../global.css'
 import { Link } from 'react-router-dom';
+
+
+
+import './../global.css'
+
+
+
+
 const GroupPage = () => {
     const modal = useRef<HTMLIonModalElement>(null);
     const params = useParams()
-    const { class_id, class_name }: any = params
+    const { class_id, class_name ,speciality}: any = params
     const [groups, setGroups] = useState<any>([]);
 
     const [GroupId, setGroupId] = useState('');
@@ -37,14 +44,14 @@ const GroupPage = () => {
     };
     const validationSchema = Yup.object({
         group_name: Yup.string()
-        .required('Group Name is required')
-        .test(
-            'is-valid-group-name',
-            'Invalid group name format',
-            (value) => /^G\d{2,}$/.test(value)
-        )
-        .max(3, 'Group Name must be at max 3 characters')
-    ,
+            .required('Group Name is required')
+            .test(
+                'is-valid-group-name',
+                'Invalid group name format',
+                (value) => /^G\d{2,}$/.test(value)
+            )
+            .max(3, 'Group Name must be at max 3 characters')
+        ,
 
         group_type: Yup.string()
             .required('Group Type is required')
@@ -90,7 +97,7 @@ const GroupPage = () => {
                                 <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
                                     <IonCol className="ion-align-self-center" size="8">
                                         <Link
-                                            style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${group.group_id}/${group.group_name}`}>
+                                            style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${speciality}/${group.group_id}/${group.group_name}`}>
                                             <IonText color="white">
                                                 {`${group.group_name} ${group.group_type}`}
                                             </IonText>

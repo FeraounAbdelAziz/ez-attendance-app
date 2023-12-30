@@ -1,5 +1,6 @@
 import DatePicker from "./DataPicker";
 import Input from "./Input";
+import Select from "./Select";
 import Textarea from "./Textarea";
 
 function FormikControl(props : any) {
@@ -9,8 +10,8 @@ function FormikControl(props : any) {
       return <Input {...rest} />;
     case "textarea":
       return <Textarea {...rest} />;
-    // case "select":
-    //   return <Select {...rest} />;
+    case "select":
+      return <Select {...rest} />;
     // case "radio":
     //   return <RadioButton {...rest} />;
     case "checkbox":

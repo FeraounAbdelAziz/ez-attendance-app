@@ -158,7 +158,7 @@ const ClassPage = () => {
                         <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
                           <IonCol className="ion-align-self-center" size="8">
                             <Link
-                              style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${classData.class_id}/${classData.name}`}>
+                              style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${classData.class_id}/${classData.name}/${classData.speciality}`}>
                               <IonText color="white">
                                 {`${classData.name} ${classData.speciality} ${classData.level}`}
                               </IonText>

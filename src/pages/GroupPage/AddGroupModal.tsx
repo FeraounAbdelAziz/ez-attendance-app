@@ -71,6 +71,9 @@ export default function AddGroupModal() {
         setShowErrorToast(true);
         return;
       }
+      if(groupData) {
+        dismiss()
+      }
 
       group_id = groupData[0].group_id;
     }
