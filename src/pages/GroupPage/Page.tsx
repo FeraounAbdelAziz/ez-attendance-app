@@ -97,7 +97,8 @@ const GroupPage = () => {
                                 <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
                                     <IonCol className="ion-align-self-center" size="8">
                                         <Link
-                                            style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${speciality}/${group.group_id}/${group.group_name}`}>
+                                            style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${speciality}/${group.group_id}/${group.group_name}/session`}>
+                                            {/* style={{ padding: '0', margin: '0', textDecoration: 'none' }} to={`/class/${class_id}/${class_name}/${speciality}/${group.group_id}/${group.group_name}`}> */}
                                             <IonText color="white">
                                                 {`${group.group_name} ${group.group_type}`}
                                             </IonText>

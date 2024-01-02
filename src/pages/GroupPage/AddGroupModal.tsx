@@ -11,11 +11,6 @@ import * as XLSX from 'xlsx'
 interface studentJson {
   fisrt_name: any
   second_name: any
-  week1: any
-  week2: any
-  week3: any
-  week4: any
-  week5: any
 }
 export default function AddGroupModal() {
   const modal = React.useRef<HTMLIonModalElement>(null);
@@ -54,9 +49,6 @@ export default function AddGroupModal() {
   const onSubmit = async (values: any) => {
     let group_id = '';
     setFileName('');
-    console.log('====================================');
-    console.log(studentJson);
-    console.log('====================================');
     if (studentJson) {
       const { group_name, group_type } = values;
 
@@ -71,7 +63,7 @@ export default function AddGroupModal() {
         setShowErrorToast(true);
         return;
       }
-      if(groupData) {
+      if (groupData) {
         dismiss()
       }
 
@@ -116,11 +108,6 @@ export default function AddGroupModal() {
     console.log("jsonData : ", jsonData.map((item: any) => ({
       first_name: item[1],
       second_name: item[2],
-      week1: item[4],
-      week2: item[5],
-      week3: item[6],
-      week4: item[7],
-      week5: item[8],
     })));
     console.log('====================================');
 
@@ -128,11 +115,6 @@ export default function AddGroupModal() {
       jsonData.map((item: any) => ({
         first_name: item[1],
         second_name: item[2],
-        week1: item[4],
-        week2: item[5],
-        week3: item[6],
-        week4: item[7],
-        week5: item[8],
       }))
     );
   };
@@ -211,22 +193,11 @@ export default function AddGroupModal() {
                     />
                   </IonItem>
                   <IonItem>
-                    {/* <FormikControl
-                      control="input"
-                      type="file"
-                      name="group_file"
-                      label="Group file : "
-                      onChange={(e: any) => handleFile(e)}
-                    /> */}
                     <input className='Input-File-Group-Add' type="file" id="file-input" name="group_file" onChange={(e: any) => handleFile(e)} />
-                    {/* <label id="file-input-label" htmlFor="file-input">Select a File</label> */}
                     {
                       fileName ? <>{fileName}</> : <label id="file-input-label" htmlFor="file-input">Select a File</label>
                     }
                   </IonItem>
-                  {/* <IonItem>
-                    {fileName}
-                  </IonItem> */}
                   <IonItem>
                     <IonButton id="open-toast-group" type="submit">Submit</IonButton>
                   </IonItem>

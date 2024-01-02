@@ -24,6 +24,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import ExcelFile from './pages/ClassPage/ExcelFile';
 import StudentPage from './pages/GroupPage/StudentPage/StudentPage';
+import SessionPage from './pages/GroupPage/SessionPage/SessionPage';
 
 
 setupIonicReact();
@@ -39,6 +40,7 @@ const App: React.FC = () => {
             <Router>
               <Switch>
                 <Route exact path="/class/:class_id/:class_name/:speciality/:group_id/:group_name" component={StudentPage} />
+                <Route exact path="/class/:class_id/:class_name/:speciality/:group_id/:group_name/session" component={SessionPage} />
                 <Route exact path="/class/:class_id/:class_name/:speciality" component={GroupPage} />
                 <Route exact path="/class" component={ClassPage} />
                 <Redirect exact from="/" to="/class" />

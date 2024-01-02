@@ -69,7 +69,7 @@ const StudentPage = () => {
             const { data, error } = await supabase
                 .from('student')
                 .update({ group_id: group_id[0].group_id, class_id: class_id[0].class_id })
-                .eq('etd_id', selectedStudentIndex)
+                .eq('student_id', selectedStudentIndex)
                 .select()
             console.log('====================================');
             console.log(data, error);
@@ -101,11 +101,11 @@ const StudentPage = () => {
 
     fetchStudents();
 
-    const updateStudent = async (etd_id: number, week: string, value: string) => {
+    const updateStudent = async (student_id: number, week: string, value: string) => {
         await supabase
             .from('student')
             .update({ [week]: value })
-            .eq('etd_id', etd_id);
+            .eq('student_id', student_id);
     };
 
 
@@ -267,9 +267,9 @@ const StudentPage = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {students?.map((student: { etd_id: any, first_name: string, second_name: string, week1: string, week2: string, week3: string, week4: string, week5: string }, index: any) => (
+                                {students?.map((student: { student_id: any, first_name: string, second_name: string, week1: string, week2: string, week3: string, week4: string, week5: string }, index: any) => (
                                     <TableRow
-                                        key={student.etd_id}
+                                        key={student.student_id}
                                         sx={{
                                             '&:last-child td, &:last-child th': { border: 0 },
                                             color: 'white',
@@ -295,7 +295,7 @@ const StudentPage = () => {
                                                 onChange={(e) => {
                                                     setSelectedStudentIndex(index);
                                                     updateStudent(
-                                                        student.etd_id,
+                                                        student.student_id,
                                                         'week1',
                                                         e.target.value
                                                     );
@@ -314,7 +314,7 @@ const StudentPage = () => {
                                                 onChange={(e) => {
                                                     setSelectedStudentIndex(index);
                                                     updateStudent(
-                                                        student.etd_id,
+                                                        student.student_id,
                                                         'week2',
                                                         e.target.value
                                                     );
@@ -333,7 +333,7 @@ const StudentPage = () => {
                                                 onChange={(e) => {
                                                     setSelectedStudentIndex(index);
                                                     updateStudent(
-                                                        student.etd_id,
+                                                        student.student_id,
                                                         'week3',
                                                         e.target.value
                                                     );
@@ -352,7 +352,7 @@ const StudentPage = () => {
                                                 onChange={(e) => {
                                                     setSelectedStudentIndex(index);
                                                     updateStudent(
-                                                        student.etd_id,
+                                                        student.student_id,
                                                         'week4',
                                                         e.target.value
                                                     );
@@ -371,7 +371,7 @@ const StudentPage = () => {
                                                 onChange={(e) => {
                                                     setSelectedStudentIndex(index);
                                                     updateStudent(
-                                                        student.etd_id,
+                                                        student.student_id,
                                                         'week5',
                                                         e.target.value
                                                     );
@@ -390,7 +390,7 @@ const StudentPage = () => {
                                                     await supabase
                                                         .from('student')
                                                         .delete()
-                                                        .eq('etd_id', student.etd_id);
+                                                        .eq('student_id', student.student_id);
                                                 }}
                                             >
                                                 <IonIcon src={deleteIcon} />
@@ -398,17 +398,17 @@ const StudentPage = () => {
                                         </TableCell>
                                         <TableCell align="left" style={{ color: 'white' }}>
                                             <IonButton
-                                                id={`open-modal-transfert-student-${student.etd_id}`}
+                                                id={`open-modal-transfert-student-${student.student_id}`}
                                                 expand="block"
-                                                onClick={() => handleOpenTransferModal(student.etd_id)}
+                                                onClick={() => handleOpenTransferModal(student.student_id)}
                                             >
                                                 <IonIcon src={sendIcon} />
                                             </IonButton>
 
                                             <IonModal
-                                                id={`example-modal-transfert-student-${student.etd_id}`}
+                                                id={`example-modal-transfert-student-${student.student_id}`}
                                                 className={'example-modal-transfert-student'}
-                                                isOpen={isTransferModalOpen && selectedStudentIndex === student.etd_id}
+                                                isOpen={isTransferModalOpen && selectedStudentIndex === student.student_id}
                                                 onDidDismiss={handleCloseTransferModal}
                                             ><IonToolbar>
                                                     <IonTitle>Transfert Student {student.first_name}</IonTitle>
@@ -430,7 +430,7 @@ const StudentPage = () => {
                                                             console.log(formik.values.classes);
                                                             console.log('====================================');
                                                             setSelectedGroupIndex(formik.values.classes);
-                                                            setSelectedStudentIndex(student.etd_id);
+                                                            setSelectedStudentIndex(student.student_id);
                                                         }, [formik.values.classes]);
 
                                                         return (
