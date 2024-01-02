@@ -1,6 +1,7 @@
 ion-modal#example-modal,
-ion-modal#update-modal ,
-.example-modal-transfert-student {
+ion-modal#update-modal,
+.example-modal-transfert-student,
+.attendance-modal {
     overflow: scroll;
     --height: 300px;
     --width: 95%;
@@ -16,6 +17,7 @@ ion-modal#update-modal-group {
     --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --backdrop-opacity: 0.2
 }
+
 .example-modal-transfert-student {
     --height: 320px;
     --width: 95%;
@@ -23,6 +25,7 @@ ion-modal#update-modal-group {
     --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --backdrop-opacity: 0.2
 }
+
 ion-modal#example-modal-add-group {
     overflow: scroll;
     --height: 280px;
@@ -32,7 +35,7 @@ ion-modal#example-modal-add-group {
     --backdrop-opacity: 0.2
 }
 
-ion-modal#example-modal-add-student{
+ion-modal#example-modal-add-student {
     overflow: scroll;
     --height: 220px;
     --width: 95%;
@@ -40,12 +43,14 @@ ion-modal#example-modal-add-student{
     --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --backdrop-opacity: 0.2
 }
+
 ion-modal#example-modal::part(backdrop),
 ion-modal#update-modal::part(backdrop),
 ion-modal#update-modal-group::part(backdrop),
 ion-modal#example-modal-add-group::part(backdrop),
 ion-modal#example-modal-add-student::part(backdrop),
-.example-modal-transfert-student ::part(backdrop) {
+.example-modal-transfert-student::part(backdrop),
+.attendance-modal::part(backdrop) {
     background: rgba(209, 213, 219);
     opacity: 1;
 }
@@ -54,8 +59,9 @@ ion-modal#example-modal ion-toolbar,
 ion-modal#update-modal ion-toolbar,
 ion-modal#update-modal-group ion-toolbar,
 ion-modal#example-modal-add-group ion-toolbar,
-ion-modal#example-modal-add-student ion-toolbar ,
-.example-modal-transfert-student  ion-toolbar{
+ion-modal#example-modal-add-student ion-toolbar,
+.example-modal-transfert-student ion-toolbar,
+.attendance-modal ion-toolbar {
     --background: rgb(63, 63, 63);
     --color: white;
 }
@@ -102,6 +108,6 @@ ion-modal#example-modal-add-student ion-toolbar ,
 
 }
 
-ion-modal#example-modal-add-student input{
+ion-modal#example-modal-add-student input {
     width: 200px;
 }

@@ -1,8 +1,23 @@
-import { IonAvatar, IonButton, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonRadio, IonRadioGroup, IonRow, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
+import { IonAvatar, IonButton, IonButtons, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonFab, IonFabButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonRadio, IonRadioGroup, IonRow, IonSearchbar, IonText, IonTitle, IonToolbar } from '@ionic/react'
 import { add } from 'ionicons/icons'
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { supabase } from '../../../supabaseClient'
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import 'swiper/css';
+import 'swiper/css/autoplay';
+import 'swiper/css/keyboard';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import 'swiper/css/zoom';
+import '@ionic/react/css/ionic-swiper.css';
+
+import './../../global.css'
+
+
+
 function SessionPage() {
   const params = useParams()
   const {
@@ -13,7 +28,9 @@ function SessionPage() {
   const modalSession = useRef<HTMLIonModalElement>(null);
   const modalAttendance = useRef<HTMLIonModalElement>(null);
 
-
+  function dismiss() {
+    modalAttendance.current?.dismiss();
+  }
   const [session_dates, setSession_dates] = useState<{ date: any; session_id: any; }[]>([]);
   const [date_Session, setDate_Session] = useState(() => {
     const currentDate = new Date();
@@ -63,7 +80,7 @@ function SessionPage() {
       setGroup_type(groupTypeFetch[0].group_type);
     }
   }
-
+  const [session_id, setSession_id] = useState('');
   const [studentSession, setStudentSession] = useState<any>([])
   const onSubmitSession = async () => {
 
@@ -85,7 +102,6 @@ function SessionPage() {
         const { class_id, first_name, second_name, group_id, ...rest } = student;
         if (sessionData && sessionData.length > 0) {
           const session_id = sessionData[0].session_id;
-
           const updatedStudent = {
             ...rest,
             session_id: session_id,
@@ -111,26 +127,40 @@ function SessionPage() {
   }, [group_id]);
 
 
-
   const studentFetchPerSession = async (session_id: any) => {
+
     const { data: StudentSessionFetch, error } = await supabase
       .from('student')
       .select(`
-  *,
-  attendance (
-    student_id,
-    session_id
-  )
-`)
+        student_id,
+        group_id,
+        first_name,
+        second_name,
+        class_id,
+        attendance (
+          status
+        )
+      `)
       .eq('attendance.session_id', session_id);
-    console.log(StudentSessionFetch, error);
 
     setStudentSession(StudentSessionFetch);
-    console.log(studentSession);
+    console.log(StudentSessionFetch, error);
+
+  };
+
+
+  const OnSubmitStudentAttendance = async (session_id: any, student_id: any, status_student: any) => {
+    const { data, error } = await supabase
+      .from('attendance')
+      .update([
+        { status: status_student },
+      ])
+      .eq('session_id', session_id)
+      .eq('student_id', student_id)
+      .select()
+    console.log(data, error);
+
   }
-
-
-
 
 
   return (
@@ -192,31 +222,46 @@ function SessionPage() {
 
                   </IonRow>
                 </IonGrid>
-                <IonModal ref={modalAttendance} trigger={`attendance-modal-${index}`} initialBreakpoint={0.85} breakpoints={[0, 0.25, 0.5, 0.75]}>
-                  <IonList>
-                    {studentSession?.map((student: { student_id: number, first_name: string, second_name: string }, index: number) => {
-                      return (
-                        <IonList key={index}>
-                          <IonGrid >
-                            <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
-                              <IonCol className="ion-align-self-center" size="8">  <IonText> {student.first_name} {" "} {student.second_name} </IonText></IonCol>
-                              <IonCol className="ion-align-self-center" size="4">
-                                <IonRadioGroup
-                                  style={{ display: 'flex', gap: '20px', marginLeft: '8px', padding: '10px' }}
-                                  onIonChange={(e) => {
-                                    console.log(e.target.value);
-                                  }}
-                                >
-                                  <IonRadio color={'warning'} labelPlacement='start' value="P">P</IonRadio>
-                                  <IonRadio color={'danger'} labelPlacement='start' value="AB">Ab</IonRadio>
-                                </IonRadioGroup>
-                              </IonCol>
-                            </IonRow>
-                          </IonGrid>
-                        </IonList>
-                      )
-                    })}
-                  </IonList>
+                <IonModal ref={modalAttendance} trigger={`attendance-modal-${index}`} className='attendance-modal'>
+                  <IonToolbar>
+                    <IonTitle>Group {group_name} {session.date}</IonTitle>
+                    <IonButtons slot="end">
+                      <IonButton color="warning" onClick={() =>dismiss()}>
+                      Close
+                    </IonButton>
+                  </IonButtons>
+                  </IonToolbar>
+                  <IonContent className="ion-padding" >
+                    <Swiper style={{ marginTop: "3rem" }} >
+                      {studentSession?.map((student: {
+                        student_id: number, first_name: string, second_name: string, attendance: [{
+                          status: 'P' | 'Ab' | 'Abj'
+                        }]
+                      }, index: number) => {
+
+                        return (
+                          <SwiperSlide key={index} >
+
+                            <IonGrid >
+                              <IonRow className="ion-justify-content-between ion-align-items-center ion-text-center">
+                                <IonCol className="ion-align-self-center" size="8">  <IonText> {student.first_name} {" "} {student.second_name} </IonText></IonCol>
+                                <IonCol className="ion-align-self-center" size="4">
+                                  <IonRadioGroup
+                                    style={{ display: 'flex', gap: '20px', marginLeft: '8px', padding: '10px' }}
+                                    onIonChange={(e) => OnSubmitStudentAttendance(session.session_id, student.student_id, e.detail.value)}
+                                    value={student.attendance[0].status}
+                                  >
+                                    <IonRadio color={'warning'} labelPlacement='start' value="P">P</IonRadio>
+                                    <IonRadio color={'danger'} labelPlacement='start' value="AB">Ab</IonRadio>
+                                  </IonRadioGroup>
+                                </IonCol>
+                              </IonRow>
+                            </IonGrid>
+                          </SwiperSlide>
+                        )
+                      })}
+                    </Swiper>
+                  </IonContent>
                 </IonModal>
               </IonItem>
             )
