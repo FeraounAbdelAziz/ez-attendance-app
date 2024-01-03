@@ -28,7 +28,7 @@ import FormikControl from '../../components/FormikComponents/FormikControl';
 import AddClassModal from './AddClassModal';
 import { Link } from 'react-router-dom';
 import './../global.css';
-import { warning } from 'ionicons/icons';
+import { warning, homeSharp } from 'ionicons/icons';
 
 
 const ClassPage = () => {
@@ -53,7 +53,7 @@ const ClassPage = () => {
         }, {})
         : {};
 
-    
+
       const classesArray = Object.entries(groupedClasses).map(([year_college, data]) => ({
         year_college,
         data,
@@ -68,7 +68,7 @@ const ClassPage = () => {
       setClasses(sortedclassesArray);
     };
     fetchClasses();
-  }, [classes]); 
+  }, [classes]);
   // useEffect(() => {
   //   console.log('====================================');
   //   console.log("Classes : ", classes);
@@ -134,10 +134,9 @@ const ClassPage = () => {
       <IonContent fullscreen>
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Class Section</IonTitle>
-          </IonToolbar>
-          <IonToolbar>
-            <IonSearchbar></IonSearchbar>
+            <IonTitle> <Link to='/class' style={{ margin: '1rem' }}>
+              <IonIcon style={{margin: '0 1rem', fontSize: '25px' }} icon={homeSharp}></IonIcon>
+            </Link> Class Section</IonTitle>
           </IonToolbar>
         </IonHeader>
         <AddClassModal />

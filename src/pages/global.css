@@ -111,3 +111,9 @@ ion-modal#example-modal-add-student ion-toolbar,
 ion-modal#example-modal-add-student input {
     width: 200px;
 }
+
+
+
+.IonTextSmallFont {
+    font-size: 14px;
+}

@@ -9,6 +9,7 @@ import updateIcon from "/assets/updateIcon.svg";
 import { useParams } from 'react-router';
 import AddGroupModal from './AddGroupModal';
 import { Link } from 'react-router-dom';
+import { homeSharp } from 'ionicons/icons';
 
 
 
@@ -20,7 +21,7 @@ import './../global.css'
 const GroupPage = () => {
     const modal = useRef<HTMLIonModalElement>(null);
     const params = useParams()
-    const { class_id, class_name ,speciality}: any = params
+    const { class_id, class_name, speciality }: any = params
     const [groups, setGroups] = useState<any>([]);
 
     const [GroupId, setGroupId] = useState('');
@@ -77,10 +78,12 @@ const GroupPage = () => {
 
                 <IonHeader>
                     <IonToolbar>
-                        <IonTitle>Group Section {class_name} </IonTitle>
-                    </IonToolbar>
-                    <IonToolbar>
-                        <IonSearchbar></IonSearchbar>
+                        <IonTitle>
+                            <Link to='/class' style={{ margin: '1rem',  }}>
+                                <IonIcon style={{ margin: '0 1rem', fontSize: '25px', }} icon={homeSharp}></IonIcon>
+                            </Link>
+                            <IonText>
+                                Class {class_name} Group Section </IonText></IonTitle>
                     </IonToolbar>
                 </IonHeader>
                 <AddGroupModal />
@@ -128,7 +131,7 @@ const GroupPage = () => {
                                 <IonToolbar>
                                     <IonTitle>Update Group </IonTitle>
                                     <IonButtons slot="end">
-                                        <IonButton color="warning" onClick={() => handleCloseModal()}>
+                                        <IonButton color="home" onClick={() => handleCloseModal()}>
                                             Close
                                         </IonButton>
                                     </IonButtons>

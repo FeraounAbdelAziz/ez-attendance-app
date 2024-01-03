@@ -10,18 +10,14 @@ import { supabase } from '../../../supabaseClient';
 import FormikControl from '../../../components/FormikComponents/FormikControl';
 
 interface studentJson {
-  fisrt_name: any
-  second_name: any
-  week1: any
-  week2: any
-  week3: any
-  week4: any
-  week5: any
+  fisrt_name: any,
+  second_name: any,
+
 }
 export default function AddStudentModal() {
   const modal = React.useRef<HTMLIonModalElement>(null);
   const params = useParams()
-  const { class_id ,group_id }: any = params
+  const { class_id, group_id, session_id }: any = params
   function dismiss() {
     modal.current?.dismiss();
   }
@@ -35,29 +31,50 @@ export default function AddStudentModal() {
     ,
 
     second_name: Yup.string()
-    .required('First Name is required')
-  ,
+      .required('First Name is required')
+    ,
 
   });
 
   const onSubmit = async (values: any) => {
-   const {first_name , second_name} = values;
-    const  {data} = await supabase
-    .from('student')
-    .insert([
-    { class_id , group_id , first_name , second_name  },
-    ])
-    .select()
-    if(data) {
-      dismiss()
+    const { first_name, second_name } = values;
+    const { data: studentInsert } = await supabase
+      .from('student')
+      .insert([
+        { class_id, group_id, first_name, second_name }
+      ])
+      .select()
+    if (studentInsert && studentInsert.length > 0) {
+      const student_id = studentInsert[0].student_id;
+      const { data: sessionFetchPerGroupId, error } = await supabase
+        .from('session')
+        .select('session_id')
+        .eq('group_id', group_id)
+      console.log(sessionFetchPerGroupId, error);
+      sessionFetchPerGroupId?.map(async (session) => {
+        const session_id = session.session_id
+        const status = ''
+        const { data: attendanceInsert, error: attendanceError } = await supabase
+          .from('attendance')
+          .insert([
+            { session_id, student_id, status }
+          ])
+          .select()
+        console.log(attendanceInsert, attendanceError);
+      })
+
+      if (studentInsert) {
+        dismiss()
+      }
     }
-        
+
+
   };
 
 
   return (
     <>
-      <IonFab slot="fixed" vertical="bottom" horizontal="end">
+      <IonFab slot="fixed" vertical="bottom" horizontal="center">
         <IonFabButton>
           <IonButton style={{ width: "100%", height: '100%', backgroundColor: "transparent" }} id="open-modal-student" expand="block">
             <IonIcon icon={add}></IonIcon>
@@ -102,7 +119,7 @@ export default function AddStudentModal() {
                       label="Second name : "
                     />
                   </IonItem>
-        
+
                   <IonItem>
                     <IonButton type="submit">Submit</IonButton>
                   </IonItem>
