@@ -335,7 +335,8 @@ const StudentPage = () => {
 
                     <IonItemSliding key={student.student_id}>
                         <IonItemOptions side="start">
-                            <IonItemOption
+                            <IonItemOption 
+                            
                                 color="warning"
                                 id={`open-modal-update-student-${student.student_id}`}
                                 onClick={() => handleOpenUpdateModal(student.student_id)}>
