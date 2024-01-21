@@ -54,12 +54,7 @@ export default function AddStudentModal() {
       sessionFetchPerGroupId?.map(async (session) => {
         const session_id = session.session_id
         const status = ''
-        const { data: attendanceInsert, error: attendanceError } = await supabase
-          .from('attendance')
-          .insert([
-            { session_id, student_id, status }
-          ])
-          .select()
+        const { data: attendanceInsert, error: attendanceError } = await supabase.from('attendance').insert([{ session_id, student_id, status }]).select()
         console.log(attendanceInsert, attendanceError);
       })
 

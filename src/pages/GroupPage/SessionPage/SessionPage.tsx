@@ -122,20 +122,12 @@ function SessionPage() {
   }
 
 
-
-
-
-
   const onSubmitSessionUpdate = async (session_id: any) => {
-
-
-    const { data, error } = await supabase
+    await supabase
       .from('session')
       .update({ date: date_Session })
       .eq('session_id', session_id)
       .select()
-    console.log(data, error);
-
 
     fetchDataSeesion();
     groupTypeFetch();
@@ -199,7 +191,7 @@ function SessionPage() {
   };
 
   const OnSubmitStudentAttendance = async (session_id: any, student_id: any, status_student: any) => {
-    const { data, error } = await supabase
+    await supabase
       .from('attendance')
       .update([
         { status: status_student },
@@ -207,7 +199,6 @@ function SessionPage() {
       .eq('session_id', session_id)
       .eq('student_id', student_id)
       .select()
-
   }
 
   const [isUpdateDateSessionModalOpen, setIsUpdateDateSessionModalOpen] = useState(false);
